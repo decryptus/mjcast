@@ -1,0 +1,6 @@
+bin/  usr/
+etc/* etc/
+share/mjcast/* usr/share/mjcast
+requirements.txt usr/share/mjcast
+setup.py usr/share/mjcast
+VERSION usr/share/mjcast

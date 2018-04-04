@@ -1,0 +1,3 @@
+usr/share/mjcast
+var/log/mjcast
+var/run/mjcast

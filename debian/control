@@ -1,0 +1,15 @@
+Source: mjcast
+Section: misc
+Priority: optional
+Maintainer: doowan
+Uploaders: doowan
+Build-Depends: debhelper (>= 9), dh-python, python (>= 2.7), python-setuptools
+Standards-Version: 3.9.4
+X-Python-Version: >= 2.7
+Homepage: https://github.com/decryptus/mjcast
+
+Package: mjcast
+Architecture: all
+Homepage: https://github.com/decryptus/mjcast
+Depends: ${misc:Depends}, chromedriver | chromium-driver, google-chrome-stable | chromium, python-dev (>= 2.7), python-pip, redis-server (>= 2.4)
+Description: Streaming MJPEG screenshots.

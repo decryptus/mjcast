@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -e
+
+USERNAME="mjcast"
+GROUPNAME="mjcast"
+
+case "$1" in
+    configure)
+        pip install -i https://pypi.python.org/simple/ -r /usr/share/mjcast/requirements.txt > /dev/null
+        adduser --system --group --no-create-home --home /nonexistent ${USERNAME} || true
+        chown -R "${USERNAME}.${GROUPNAME}" /usr/share/mjcast
+        chown -R "${USERNAME}.${GROUPNAME}" /var/log/mjcast
+        chown -R "${USERNAME}.${GROUPNAME}" /var/run/mjcast
+        update-rc.d mjcast defaults
+        invoke-rc.d mjcast start || true
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+	echo "postinst called with unknown argument \`$1'" >&2
+	exit 1
+    ;;
+esac

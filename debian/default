@@ -1,0 +1,6 @@
+EXTRA_OPTS="-u mjcast -g mjcast"
+# defaults file for mjcast
+
+# Service can be enabled by setting
+# MJCAST_ENABLE="yes"
+MJCAST_ENABLE="yes"

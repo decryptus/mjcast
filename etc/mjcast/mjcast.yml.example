@@ -1,0 +1,78 @@
+general:
+  listen_addr:        0.0.0.0
+  listen_port:        8670
+  charset:            utf-8
+  content_type:       'application/json; charset=utf-8'
+  max_workers:        10
+  loading_file:       '/usr/share/mjcast/loading.jpg'
+  redis:
+    playlist:
+      url:            'redis://127.0.0.1:6379?db=0'
+plugins:
+  playlist:
+    -
+      name: google_news
+      executable_path: '/usr/bin/chromedriver'
+      binary_location: '/usr/bin/google-chrome'
+      datetime:
+        color: [0, 0, 0]
+        scale: 1.2
+        thickness: 2
+      url: 'https://news.google.com/news/headlines?ned=us&gl=US&hl=en'
+      delay: 1
+      ttl: 20
+      wait: 10
+      options:
+      #- '--no-sandbox' # only if you running daemon as root
+      - '--headless'
+      - '--disable-gpu'
+      - '--window-size=1920,1080'
+      - '--hide-scrollbars'
+    -
+      name: prometheus
+      executable_path: '/usr/bin/chromedriver'
+      binary_location: '/usr/bin/google-chrome'
+      datetime:
+        color: [255, 255, 255]
+        scale: 1.2
+        thickness: 2
+      url: 'https://prometheus.io/assets/grafana_prometheus-cbb943f0bb3.png'
+      delay: 1
+      ttl: 20
+      wait: 10
+      options:
+      #- '--no-sandbox' # only if you running daemon as root
+      - '--headless'
+      - '--disable-gpu'
+      - '--window-size=1920,1080'
+      - '--hide-scrollbars'
+    -
+      name: bind
+      executable_path: '/usr/bin/chromedriver'
+      binary_location: '/usr/bin/google-chrome'
+      datetime:
+        color: [130, 7, 170]
+        scale: 1.2
+        thickness: 2
+      url: 'https://www.bing.com'
+      delay: 1
+      ttl: 20
+      wait: 10
+      options:
+      #- '--no-sandbox' # only if you running daemon as root
+      - '--headless'
+      - '--disable-gpu'
+      - '--window-size=1920,1080'
+      - '--hide-scrollbars'
+modules:
+  server:
+    routes:
+      status:
+        handler:   'status'
+        name:      'server/status'
+        op:        'GET'
+      stream:
+        safe_init: true
+        handler:   'stream'
+        name:      'server/stream'
+        op:        'GET'
