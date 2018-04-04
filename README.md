@@ -9,6 +9,6 @@ so we decide to display screenshots with MJPEG procotol.
 Installation on Debian
 ======================
 
-apt-get install chromium-driver chromium python-dev python-pip redis-server
-pip install -r requirements.txt
-pip install mjcast
+- apt-get install chromium-driver chromium python-dev python-pip redis-server
+- pip install -r requirements.txt
+- pip install mjcast
