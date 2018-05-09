@@ -31,7 +31,7 @@ from datetime import datetime
 from dwho.adapters.redis import DWhoAdapterRedis
 from dwho.classes.plugins import DWhoPluginBase, PLUGINS
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.chrome.options import Options
 from sonicprobe.libs.keystore import Keystore
 from tempfile import mkstemp
@@ -48,7 +48,7 @@ DATETIME_DEFAULT = {'position': 'auto',
 
 
 class MjCastMedia(threading.Thread):
-    def __init__(self, name, params, adapter_redis): 
+    def __init__(self, name, params, adapter_redis):
         threading.Thread.__init__(self)
         self.daemon        = True
         self.killed        = False
@@ -59,9 +59,7 @@ class MjCastMedia(threading.Thread):
         self.adapter_redis = adapter_redis
         self.ttl           = int(self.params.get('ttl') or 1)
 
-        self.driver        = webdriver.Chrome(
-                                 executable_path = self.params['executable_path'],
-                                 chrome_options  = self.driver_options())
+        self.init_driver()
 
     def get_name(self):
         return self.name
@@ -125,6 +123,11 @@ class MjCastMedia(threading.Thread):
             if filepath and os.path.exists(filepath):
                 os.unlink(filepath)
 
+    def init_driver(self):
+        self.driver = webdriver.Chrome(
+                          executable_path = self.params['executable_path'],
+                          chrome_options  = self.driver_options())
+
     def driver_options(self):
         r = Options()
 
@@ -155,7 +158,13 @@ class MjCastMedia(threading.Thread):
                                .set(self.name, 'wait', wait))
                    self.result.try_release(self.name)
                 else:
-                    self.driver.refresh()
+                    try:
+                        self.driver.refresh()
+                    except (TimeoutException, WebDriverException):
+                        self.quit()
+                        self.init_driver()
+                        self.driver.get(self.params['url'])
+
                     if self.params.get('delay'):
                         time.sleep(float(self.params['delay']))
                     (gmtime, xlen, data) = self.save_screenshot()
@@ -171,13 +180,16 @@ class MjCastMedia(threading.Thread):
             finally:
                 self.result.try_release(self.name)
 
+    def quit(self):
+        try:
+            self.driver.quit()
+        except (TimeoutException, WebDriverException):
+            pass
+
     def terminate(self):
         self.killed = True
 
-        try:
-            self.driver.quit()
-        except WebDriverException:
-            pass
+        self.quit()
 
         self.driver = None
 
