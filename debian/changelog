@@ -1,3 +1,9 @@
+mjcast (0.1.1) unstable; urgency=medium
+
+  * Fixed WebDriverException: Message: no such session.
+
+ -- Adrien DELLE CAVE (Decryptus) <adc@doowan.net>  Wed, 09 May 2018 11:13:42 +0200
+
 mjcast (0.1.0) unstable; urgency=medium
 
   * Initial release.
