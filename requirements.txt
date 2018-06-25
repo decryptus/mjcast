@@ -1,5 +1,5 @@
 dwho>=0.2.27
-pyopencv
+opencv-python
 redis
 selenium
 sonicprobe>=0.2.40
