@@ -1,5 +1,6 @@
-dwho>=0.2.27
+dwho>=0.2.58
+httpdis>=0.5.2
 opencv-python
 redis
 selenium
-sonicprobe>=0.2.40
+sonicprobe>=0.2.51
