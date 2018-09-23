@@ -34,8 +34,9 @@ from mjcast.modules import * # XXX
 from mjcast.plugins import * # XXX
 from dwho.modules import * # XXX
 from dwho import config
+from httpdis import httpdis
 from sonicprobe import helpers
-from sonicprobe.libs import daemonize, http_json_server
+from sonicprobe.libs import daemonize
 
 
 SYSLOG_NAME = "mjcast"
@@ -118,8 +119,8 @@ def main(options):
     setattr(options, 'server_version', "%s/%s" % (SYSLOG_NAME, __version__))
     setattr(options, 'sys_version', '')
 
-    http_json_server.init(options, False)
-    config.DWHO_THREADS.append(http_json_server.stop)
+    httpdis.init(options, False)
+    config.DWHO_THREADS.append(httpdis.stop)
 
     if not options.foreground:
         LOG.info("Transforming into a daemon from hell")
@@ -143,7 +144,7 @@ def main(options):
 
         config.start_plugins()
         config.start_inotify()
-        http_json_server.run(options)
+        httpdis.run(options)
     except (KeyboardInterrupt, SystemExit):
         raise
     except Exception:
