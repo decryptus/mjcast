@@ -36,7 +36,7 @@ plugins:
         color: [255, 255, 255]
         scale: 1.2
         thickness: 2
-      url: 'https://prometheus.io/assets/grafana_prometheus-cbb943f0bb3.png'
+      url: 'https://prometheus.io/assets/grafana_prometheus.png'
       delay: 1
       ttl: 20
       wait: 10
@@ -47,7 +47,7 @@ plugins:
       - '--window-size=1920,1080'
       - '--hide-scrollbars'
     -
-      name: bind
+      name: bing
       executable_path: '/usr/bin/chromedriver'
       binary_location: '/usr/bin/google-chrome'
       datetime:
