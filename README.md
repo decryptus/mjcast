@@ -12,3 +12,19 @@ Installation on Debian
 - apt-get install chromium-driver chromium python-dev python-pip redis-server
 - pip install -r requirements.txt
 - pip install mjcast
+
+Running with Docker
+===================
+
+If you want to run this project with docker you first need to build it.
+
+```sh
+docker build -t mjcast .
+```
+
+Then you would run it with the following command:
+```sh
+docker run -d --shm-size 512M -p 8670:8670 -v `pwd`/docker/mjcast.yml.example:/etc/mjcast/mjcast.yml:ro mjcast
+```
+
+Do not ommit the `--shm-size` else chromium won't start
