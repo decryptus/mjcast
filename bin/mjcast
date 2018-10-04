@@ -39,8 +39,24 @@ from sonicprobe import helpers
 from sonicprobe.libs import daemonize
 
 
-SYSLOG_NAME = "mjcast"
-LOG         = logging.getLogger(SYSLOG_NAME)
+SYSLOG_NAME     = "mjcast"
+LOG             = logging.getLogger(SYSLOG_NAME)
+
+DEFAULT_PIDFILE = "/run/mjcast/mjcast.pid"
+DEFAULT_LOGFILE = "/var/log/mjcast/daemon.log"
+
+try:
+    MJCAST_USER  = pwd.getpwnam(os.environ.get('MJCAST_USER') or 'mjcast').pw_name
+except KeyError:
+    MJCAST_USER  = pwd.getpwuid(os.geteuid())[0]
+
+try:
+    MJCAST_GROUP = grp.getgrnam(os.environ.get('MJCAST_USER') or 'mjcast').gr_name
+except KeyError:
+    MJCAST_GROUP = grp.getgrgid(os.getegid())[0]
+
+MJCAST_PIDFILE = os.environ.get('MJCAST_PIDFILE') or DEFAULT_PIDFILE
+MJCAST_LOGFILE = os.environ.get('MJCAST_LOGFILE') or DEFAULT_LOGFILE
 
 
 def argv_parse_check():
@@ -71,22 +87,22 @@ def argv_parse_check():
                       help      = "Use configuration file <conffile> instead of %default")
     parser.add_option("-p",
                       dest      = 'pidfile',
-                      default   = "/run/mjcast.pid",
+                      default   = MJCAST_PIDFILE,
                       help      = "Use PID file <pidfile> instead of %default")
     parser.add_option("-u",
                       dest      = 'username',
                       type      = 'string',
-                      default   = pwd.getpwuid(os.geteuid())[0],
+                      default   = MJCAST_USER,
                       help      = "Use username for the process instead of %default")
     parser.add_option("-g",
                       dest      = 'groupname',
                       type      = 'string',
-                      default   = grp.getgrgid(os.getegid())[0],
+                      default   = MJCAST_GROUP,
                       help      = "Use groupname for the process instead of %default")
     parser.add_option("--logfile",
                       dest      = 'logfile',
                       type      = 'string',
-                      default   = "/var/log/mjcast/daemon.log",
+                      default   = MJCAST_LOGFILE,
                       help      = "Use log file <logfile> instead of %default")
     parser.add_option("--listen-addr",
                       dest      = 'listen_addr',
@@ -110,11 +126,14 @@ def main(options):
     """
     Main function; start the server
     """
+    uid = pwd.getpwnam(options.username)[2]
+    gid = grp.getgrnam(options.groupname)[2]
+
+    config.make_piddir(options.pidfile, uid, gid)
+    config.make_logdir(options.logfile, uid, gid)
+
     root_logger = config.init_logger(options.logfile, SYSLOG_NAME)
     options     = config.load_conf(options.conffile, options)
-
-    uid         = pwd.getpwnam(options.username)[2]
-    gid         = grp.getgrnam(options.groupname)[2]
 
     setattr(options, 'server_version', "%s/%s" % (SYSLOG_NAME, __version__))
     setattr(options, 'sys_version', '')
@@ -125,11 +144,6 @@ def main(options):
     if not options.foreground:
         LOG.info("Transforming into a daemon from hell")
         daemonize.daemonize()
-
-    dirpid = os.path.dirname(options.pidfile)
-    if dirpid:
-        helpers.make_dirs(dirpid)
-        os.chown(dirpid, uid, gid)
 
     LOG.info("locking PID")
     daemonize.lock_pidfile_or_die(options.pidfile)
