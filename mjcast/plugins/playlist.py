@@ -90,7 +90,10 @@ class MjCastMedia(threading.Thread):
 
         return img
 
-    def save_screenshot(self):
+    def save_screenshot(self, with_delay = True):
+        if with_delay and self.params.get('delay'):
+            time.sleep(float(self.params['delay']))
+
         (tmpfd, tmpfile, filepath, data) = (0, None, None, None)
 
         try:
@@ -111,6 +114,9 @@ class MjCastMedia(threading.Thread):
                                        self.ttl)
 
             return (gmtime, xlen, data)
+        except (TimeoutException, WebDriverException):
+            self.reinit_driver()
+            self.save_screenshot(with_delay = with_delay)
         finally:
             data = None
 
@@ -128,6 +134,11 @@ class MjCastMedia(threading.Thread):
                           executable_path = self.params['executable_path'],
                           chrome_options  = self.driver_options())
 
+    def reinit_driver(self):
+        self.quit()
+        self.init_driver()
+        self.driver.get(self.params['url'])
+
     def driver_options(self):
         r = Options()
 
@@ -140,9 +151,6 @@ class MjCastMedia(threading.Thread):
 
     def run(self):
         self.driver.get(self.params['url'])
-        if self.params.get('delay'):
-            time.sleep(float(self.params['delay']))
-
         self.save_screenshot()
 
         while not self.killed:
@@ -158,16 +166,15 @@ class MjCastMedia(threading.Thread):
                                .set(self.name, 'wait', wait))
                    self.result.try_release(self.name)
                 else:
-                    try:
-                        self.driver.refresh()
-                    except (TimeoutException, WebDriverException):
-                        self.quit()
-                        self.init_driver()
-                        self.driver.get(self.params['url'])
+                    with_delay = False
+                    if bool(self.params.get('refresh', True)):
+                        with_delay = True
+                        try:
+                            self.driver.refresh()
+                        except (TimeoutException, WebDriverException):
+                            self.reinit_driver()
 
-                    if self.params.get('delay'):
-                        time.sleep(float(self.params['delay']))
-                    (gmtime, xlen, data) = self.save_screenshot()
+                    (gmtime, xlen, data) = self.save_screenshot(with_delay)
                     self.result.try_acquire(self.name)
                     (self.result.set(self.name, 'gmtime', gmtime)
                                 .set(self.name, 'length', long(xlen))

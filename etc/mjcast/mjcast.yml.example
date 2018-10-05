@@ -22,6 +22,7 @@ plugins:
       delay: 1
       ttl: 20
       wait: 10
+      refresh: true
       options:
       - '--no-sandbox' # only if you running daemon as root
       - '--headless'
@@ -41,6 +42,7 @@ plugins:
       delay: 1
       ttl: 20
       wait: 10
+      refresh: true
       options:
       - '--no-sandbox' # only if you running daemon as root
       - '--headless'
@@ -60,6 +62,7 @@ plugins:
       delay: 1
       ttl: 20
       wait: 10
+      refresh: false
       options:
       - '--no-sandbox' # only if you running daemon as root
       - '--headless'

@@ -35,7 +35,6 @@ from mjcast.plugins import * # XXX
 from dwho.modules import * # XXX
 from dwho import config
 from httpdis import httpdis
-from sonicprobe import helpers
 from sonicprobe.libs import daemonize
 
 
