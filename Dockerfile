@@ -1,32 +1,37 @@
 FROM python:2.7-slim
 
+ENV MJCAST_VERSION "0.1.9"
+ENV MJCAST_USER "nobody"
+ENV MJCAST_GROUP "nogroup"
+ENV MJCAST_PIDFILE "/run/mjcast/mjcast.pid"
+ENV MJCAST_LOGFILE "/var/log/mjcast/daemon.log"
+
 # Install base softwares
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        chromium \
+        chromium-driver \
         libcurl4-gnutls-dev \
         libgnutls28-dev \
-        build-essential \
-        python-magic \
-        chromium-driver chromium redis-server && \
-		rm -rf /var/lib/apt/lists/*
+        libmagic1 \
+        redis-server && \
+    rm -rf /var/lib/apt/lists/*
 
-# Add source to container
-ADD . /opt/mjcast-src
+ADD share/mjcast docker requirements.txt /usr/share/mjcast/
 
 # Install python module
-RUN pip install -r /opt/mjcast-src/requirements.txt && \
-    cd /opt/mjcast-src && python ./setup.py install
+RUN pip install -r /usr/share/mjcast/requirements.txt
+RUN pip install mjcast==${MJCAST_VERSION}
 
-# Add extra resources
-RUN mkdir /var/log/mjcast && \
-    chown nobody.nogroup /var/log/mjcast && \
-    chmod +x /opt/mjcast-src/docker/docker-entrypoint.sh && \
-    mkdir /etc/mjcast && \
-    cp -a /opt/mjcast-src/etc/mjcast/mjcast.yml.example	/etc/mjcast/mjcast.yml && \
-    mkdir /usr/share/mjcast && cp /opt/mjcast-src/share/mjcast/loading.jpg /usr/share/mjcast/loading.jpg
+ADD etc/mjcast/mjcast.yml.example /etc/mjcast/mjcast.yml
 
 EXPOSE 8670
 
-ENTRYPOINT ["/opt/mjcast-src/docker/docker-entrypoint.sh"]
+# Add extra resources
+RUN chmod +x /usr/share/mjcast/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/share/mjcast/docker-entrypoint.sh"]
 
 # Run mjcast in foreground
 CMD ["mjcast", "-f"]

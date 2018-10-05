@@ -24,7 +24,10 @@ docker build -t mjcast .
 
 Then you would run it with the following command:
 ```sh
-docker run -d --shm-size 512M -p 8670:8670 -v `pwd`/docker/mjcast.yml.example:/etc/mjcast/mjcast.yml:ro mjcast
+docker run -d -p 8670:8670 mjcast
 ```
 
-Do not ommit the `--shm-size` else chromium won't start
+Results
+=======
+
+Streaming URL: http://localhost:8670/server/stream

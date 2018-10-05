@@ -13,7 +13,7 @@ plugins:
     -
       name: google_news
       executable_path: '/usr/bin/chromedriver'
-      binary_location: '/usr/bin/google-chrome'
+      binary_location: '/usr/bin/chromium'
       datetime:
         color: [0, 0, 0]
         scale: 1.2
@@ -23,15 +23,16 @@ plugins:
       ttl: 20
       wait: 10
       options:
-      #- '--no-sandbox' # only if you running daemon as root
+      - '--no-sandbox' # only if you running daemon as root
       - '--headless'
+      - '--disable-dev-shm-usage'
       - '--disable-gpu'
       - '--window-size=1920,1080'
       - '--hide-scrollbars'
     -
       name: prometheus
       executable_path: '/usr/bin/chromedriver'
-      binary_location: '/usr/bin/google-chrome'
+      binary_location: '/usr/bin/chromium'
       datetime:
         color: [255, 255, 255]
         scale: 1.2
@@ -41,15 +42,16 @@ plugins:
       ttl: 20
       wait: 10
       options:
-      #- '--no-sandbox' # only if you running daemon as root
+      - '--no-sandbox' # only if you running daemon as root
       - '--headless'
+      - '--disable-dev-shm-usage'
       - '--disable-gpu'
       - '--window-size=1920,1080'
       - '--hide-scrollbars'
     -
       name: bing
       executable_path: '/usr/bin/chromedriver'
-      binary_location: '/usr/bin/google-chrome'
+      binary_location: '/usr/bin/chromium'
       datetime:
         color: [130, 7, 170]
         scale: 1.2
@@ -59,8 +61,9 @@ plugins:
       ttl: 20
       wait: 10
       options:
-      #- '--no-sandbox' # only if you running daemon as root
+      - '--no-sandbox' # only if you running daemon as root
       - '--headless'
+      - '--disable-dev-shm-usage'
       - '--disable-gpu'
       - '--window-size=1920,1080'
       - '--hide-scrollbars'

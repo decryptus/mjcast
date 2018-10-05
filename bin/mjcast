@@ -51,7 +51,7 @@ except KeyError:
     MJCAST_USER  = pwd.getpwuid(os.geteuid())[0]
 
 try:
-    MJCAST_GROUP = grp.getgrnam(os.environ.get('MJCAST_USER') or 'mjcast').gr_name
+    MJCAST_GROUP = grp.getgrnam(os.environ.get('MJCAST_GROUP') or 'mjcast').gr_name
 except KeyError:
     MJCAST_GROUP = grp.getgrgid(os.getegid())[0]
 
