@@ -1,6 +1,6 @@
 FROM python:2.7-slim
 
-ENV MJCAST_VERSION "0.1.9"
+ENV MJCAST_VERSION "0.1.10"
 ENV MJCAST_USER "nobody"
 ENV MJCAST_GROUP "nogroup"
 

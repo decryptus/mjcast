@@ -158,13 +158,13 @@ class MjCastMedia(threading.Thread):
                 value = self.adapter_redis.get_key(self.name)
                 wait  = float(self.params.get('wait', 1))
                 if value:
-                   (gmtime, xlen, data) = value.split('|', 2)
-                   self.result.try_acquire(self.name)
-                   (self.result.set(self.name, 'gmtime', gmtime)
-                               .set(self.name, 'length', long(xlen))
-                               .set(self.name, 'data', base64.b64decode(data))
-                               .set(self.name, 'wait', wait))
-                   self.result.try_release(self.name)
+                    (gmtime, xlen, data) = value.split('|', 2)
+                    self.result.try_acquire(self.name)
+                    (self.result.set(self.name, 'gmtime', gmtime)
+                                .set(self.name, 'length', long(xlen))
+                                .set(self.name, 'data', base64.b64decode(data))
+                                .set(self.name, 'wait', wait))
+                    self.result.try_release(self.name)
                 else:
                     with_delay = False
                     if bool(self.params.get('refresh', True)):
