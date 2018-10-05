@@ -3,8 +3,6 @@ FROM python:2.7-slim
 ENV MJCAST_VERSION "0.1.9"
 ENV MJCAST_USER "nobody"
 ENV MJCAST_GROUP "nogroup"
-ENV MJCAST_PIDFILE "/run/mjcast/mjcast.pid"
-ENV MJCAST_LOGFILE "/var/log/mjcast/daemon.log"
 
 # Install base softwares
 RUN apt-get update && \
