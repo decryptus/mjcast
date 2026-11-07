@@ -1,5 +1,5 @@
 dwho>=0.2.89
-httpdis>=0.5.13
+httpdis>=0.7.1
 opencv-python
 redis>=2.4.0
 selenium
